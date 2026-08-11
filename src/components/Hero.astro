@@ -1,0 +1,254 @@
+---
+import { PROFILE_CONFIG } from '../config/profile';
+---
+
+<section id="inicio" class="hero-section">
+  <div class="container hero-container">
+    <div class="hero-content">
+      <div class="status-pill">
+        <span class="pulse-dot"></span>
+        <span>Disponible para Proyectos & Desafíos TI</span>
+      </div>
+
+      {PROFILE_CONFIG.features.showInclusionLawBadge && (
+        <div class="inclusion-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Inclusión Laboral Ley 21.015 (RND 40%)
+        </div>
+      )}
+
+      <h1 class="hero-name">
+        Hola, soy <span class="gradient-text">{PROFILE_CONFIG.personal.name}</span>
+      </h1>
+
+      <h2 class="hero-title">
+        {PROFILE_CONFIG.personal.title} <span class="divider">|</span> Full-Stack & Software Architecture
+      </h2>
+
+      <p class="hero-bio">
+        {PROFILE_CONFIG.personal.shortBio}
+      </p>
+
+      <div class="hero-tech-badges">
+        <span class="badge"><span class="badge-dot cyan"></span>Astro v6 SSR</span>
+        <span class="badge"><span class="badge-dot indigo"></span>React 18</span>
+        <span class="badge"><span class="badge-dot cyan"></span>TypeScript</span>
+        <span class="badge"><span class="badge-dot emerald"></span>Node.js / Express</span>
+        <span class="badge"><span class="badge-dot indigo"></span>Django REST</span>
+        <span class="badge"><span class="badge-dot cyan"></span>PostgreSQL & Prisma</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#proyectos" class="btn btn-primary" id="btn-hero-proyectos">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Explorar Demos Interactivas
+        </a>
+
+        <a href={PROFILE_CONFIG.personal.cvPath} download="Franco_Borotto_CV.PDF" class="btn btn-secondary" id="btn-hero-cv">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descargar CV (PDF)
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="code-card glass-card animate-float">
+        <div class="card-header">
+          <div class="dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="card-title">franco.config.ts</span>
+        </div>
+        <div class="card-body">
+          <pre><code><span class="keyword">const</span> engineer = &#123;
+  name: <span class="string">"{PROFILE_CONFIG.personal.name}"</span>,
+  role: <span class="string">"Full-Stack Software Engineer"</span>,
+  education: <span class="string">"Duoc UC (2019 - 2026)"</span>,
+  location: <span class="string">"Santiago, Chile"</span>,
+  skills: [
+    <span class="string">"TypeScript"</span>, <span class="string">"Astro"</span>, <span class="string">"React"</span>,
+    <span class="string">"Node.js"</span>, <span class="string">"Django"</span>, <span class="string">"PostgreSQL"</span>
+  ],
+  passion: <span class="string">"Clean Code & Interactive Demos"</span>
+&#125;;</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-section {
+    padding-top: 9rem;
+    padding-bottom: 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--emerald-light);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    margin-bottom: 1.25rem;
+  }
+
+  .inclusion-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--cyan-light);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid var(--border-cyan);
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    margin-left: 0.5rem;
+  }
+
+  .hero-name {
+    font-size: 3.25rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light) 50%, var(--cyan-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 1.25rem;
+  }
+
+  .divider {
+    color: var(--primary);
+  }
+
+  .hero-bio {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+
+  .hero-tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .badge-dot.cyan { background: var(--cyan-light); }
+  .badge-dot.indigo { background: var(--primary-light); }
+  .badge-dot.emerald { background: var(--emerald-light); }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  /* Code Card Styling */
+  .code-card {
+    padding: 0;
+    overflow: hidden;
+    background: rgba(10, 15, 30, 0.85);
+  }
+
+  .card-header {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dots {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+
+  .card-title {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-subtle);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .keyword { color: #f472b6; }
+  .string { color: #a7f3d0; }
+
+  @media (max-width: 992px) {
+    .hero-container {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .hero-bio {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-tech-badges, .hero-actions {
+      justify-content: center;
+    }
+
+    .hero-visual {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero-name {
+      font-size: 2.25rem;
+    }
+    .hero-title {
+      font-size: 1.1rem;
+    }
+  }
+</style>

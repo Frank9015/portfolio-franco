@@ -1,0 +1,372 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
+import { PROFILE_CONFIG, type ProjectData } from '../../config/profile';
+
+export const prerender = true;
+
+// React Islands
+import { AsesoriasBorottoDemo } from '../../components/demos/AsesoriasBorottoDemo';
+
+import { InventProDemo } from '../../components/demos/InventProDemo';
+import { RegistraAppDemo } from '../../components/demos/RegistraAppDemo';
+import { CaosNewsDemo } from '../../components/demos/CaosNewsDemo';
+import { ProjectTechnicalDocs, type ERDTable, type ApiEndpoint } from '../../components/docs/ProjectTechnicalDocs';
+
+export function getStaticPaths() {
+  return PROFILE_CONFIG.projects.map(p => ({
+    params: { id: p.id },
+    props: { project: p }
+  }));
+}
+
+const { id } = Astro.params;
+const project = PROFILE_CONFIG.projects.find(p => p.id === id) || PROFILE_CONFIG.projects[0];
+
+// Technical documentation specs per project
+const techDocsMap: Record<string, {
+  architectureDescription: string;
+  erdTables: ERDTable[];
+  apiEndpoints: ApiEndpoint[];
+  retrospective: { challenge: string; juniorMistake: string; modernRefactor: string };
+}> = {
+  'asesorias-borotto': {
+    architectureDescription: 'Arquitectura Server-Side Rendered (SSR) con Astro v6 desplegado en Vercel Edge. Utiliza PostgreSQL con ORM Prisma para la persistencia relacional y sistema de tokens UUID temporales de un solo uso para validación anti-spam de testimonios.',
+    erdTables: [
+      {
+        name: 'Plan',
+        columns: [
+          { name: 'id', type: 'String (UUID)', key: 'PK' },
+          { name: 'name', type: 'String' },
+          { name: 'priceUF', type: 'Float' },
+          { name: 'features', type: 'String[]' },
+          { name: 'isPopular', type: 'Boolean' }
+        ]
+      },
+      {
+        name: 'ReviewToken',
+        columns: [
+          { name: 'id', type: 'String (UUID)', key: 'PK' },
+          { name: 'token', type: 'String', key: 'FK' },
+          { name: 'email', type: 'String' },
+          { name: 'isUsed', type: 'Boolean' },
+          { name: 'expiresAt', type: 'DateTime' }
+        ]
+      },
+      {
+        name: 'ContactMessage',
+        columns: [
+          { name: 'id', type: 'String (UUID)', key: 'PK' },
+          { name: 'name', type: 'String' },
+          { name: 'email', type: 'String' },
+          { name: 'message', type: 'Text' },
+          { name: 'createdAt', type: 'DateTime' }
+        ]
+      }
+    ],
+    apiEndpoints: [
+      { method: 'GET', path: '/api/v1/planes', description: 'Obtiene el listado de planes contables en UF', response: '[{ id, name, priceUF }]' },
+      { method: 'POST', path: '/api/v1/reviews/verify-token', description: 'Valida un token UUID de reseña de un solo uso', parameters: '{ token: string }', response: '{ valid: true, email: string }' },
+      { method: 'POST', path: '/api/v1/contacto', description: 'Envía mensaje de cliente con notificación por Nodemailer', parameters: '{ name, email, message }', response: '{ success: true }' }
+    ],
+    retrospective: {
+      challenge: 'Garantizar que el formulario de reseñas de clientes reales no pudiera ser abusado por bots o spammers en internet.',
+      juniorMistake: 'En las primeras iteraciones los formularios dependen de recaptchas pesados que arruinaban la experiencia de usuario.',
+      modernRefactor: 'Implementación de arquitectura con tokens UUID de un solo uso persistidos en Prisma PostgreSQL que expiran automáticamente.'
+    }
+  },
+
+  'inventpro': {
+    architectureDescription: 'Arquitectura omnicanal desacoplada. API RESTful en Node.js/Express conectada a PostgreSQL. Cliente Web SPA en React 18 + Vite para gerencia de compras y cliente móvil en React Native (Expo) para operarios de bodega con comunicación JWT.',
+    erdTables: [
+      {
+        name: 'Usuarios',
+        columns: [
+          { name: 'id', type: 'BigInt', key: 'PK' },
+          { name: 'email', type: 'VARCHAR(255)' },
+          { name: 'password_hash', type: 'VARCHAR(255)' },
+          { name: 'rol', type: 'VARCHAR(50)' }
+        ]
+      },
+      {
+        name: 'Productos',
+        columns: [
+          { name: 'id', type: 'BigInt', key: 'PK' },
+          { name: 'codigo_sku', type: 'VARCHAR(50)' },
+          { name: 'nombre', type: 'VARCHAR(255)' },
+          { name: 'stock_actual', type: 'INTEGER' },
+          { name: 'stock_minimo', type: 'INTEGER' }
+        ]
+      },
+      {
+        name: 'OrdenesCompra',
+        columns: [
+          { name: 'id', type: 'BigInt', key: 'PK' },
+          { name: 'numero_orden', type: 'VARCHAR(50)' },
+          { name: 'proveedor', type: 'VARCHAR(255)' },
+          { name: 'estado', type: 'VARCHAR(50)' }
+        ]
+      }
+    ],
+    apiEndpoints: [
+      { method: 'POST', path: '/api/v1/auth/login', description: 'Autenticación de usuario con retorno de JWT Bearer token', parameters: '{ email, password }', response: '{ token: string, user: object }' },
+      { method: 'GET', path: '/api/v1/inventario/productos', description: 'Obtiene lista de productos y alerta de stock crítico', response: '[{ sku, stock, stockMinimo }]' },
+      { method: 'POST', path: '/api/v1/movimientos-bodega', description: 'Registra una entrada o salida de stock realizada desde la app móvil', parameters: '{ productoId, tipo, cantidad }', response: '{ stockNuevo: number }' }
+    ],
+    retrospective: {
+      challenge: 'Sincronizar en tiempo real el stock modificado por operarios en la app móvil con el dashboard web del administrador.',
+      juniorMistake: 'En el prototipo académico inicial no existía un middleware centralizado para validar roles JWT en cada endpoint.',
+      modernRefactor: 'Uso de arquitectura RBAC estricta con middleware JWT en Express y estado optimista en el cliente React.'
+    }
+  },
+
+  'registra-app': {
+    architectureDescription: 'Sistema asistencial universitario. Backend en Django REST Framework conectado a SQLite/PostgreSQL. Generación de códigos QR mediante Pillow en el servidor y consumo desde aplicación móvil Ionic.',
+    erdTables: [
+      {
+        name: 'User',
+        columns: [
+          { name: 'id', type: 'IntegerField', key: 'PK' },
+          { name: 'username', type: 'CharField' },
+          { name: 'email', type: 'EmailField' },
+          { name: 'role', type: 'CharField' }
+        ]
+      },
+      {
+        name: 'Clase',
+        columns: [
+          { name: 'id', type: 'IntegerField', key: 'PK' },
+          { name: 'asignatura', type: 'CharField' },
+          { name: 'qr_hash', type: 'CharField' },
+          { name: 'activa', type: 'BooleanField' }
+        ]
+      },
+      {
+        name: 'Asistencia',
+        columns: [
+          { name: 'id', type: 'IntegerField', key: 'PK' },
+          { name: 'clase_id', type: 'ForeignKey', key: 'FK' },
+          { name: 'alumno_id', type: 'ForeignKey', key: 'FK' },
+          { name: 'fecha_registro', type: 'DateTimeField' }
+        ]
+      }
+    ],
+    apiEndpoints: [
+      { method: 'POST', path: '/api/token/', description: 'Obtención de par de tokens JWT (access & refresh) en Django', parameters: '{ username, password }', response: '{ access, refresh }' },
+      { method: 'POST', path: '/api/asistencia/scan/', description: 'Valida un escaneo QR realizado por la app del alumno', parameters: '{ qr_hash, coords }', response: '{ status: "PRESENTE", timestamp }' }
+    ],
+    retrospective: {
+      challenge: 'Hacer que el escaneo QR no fuera susceptible a suplantación si los alumnos compartían capturas de pantalla.',
+      juniorMistake: 'El requirements.txt original incluía dependencias específicas de plataforma como pywin32 para Windows.',
+      modernRefactor: 'Implementación de hashes QR dinámicos con expiración de 10 minutos y requerimientos multiplataforma limpios para Docker/Railway.'
+    }
+  },
+
+  'caosnews': {
+    architectureDescription: 'Monolito en Django con arquitectura MVT (Model-View-Template), sistema de permisos por jerarquía (RBAC) y soporte de bases de datos relacionales SQLite / Oracle 19c.',
+    erdTables: [
+      {
+        name: 'Noticia',
+        columns: [
+          { name: 'id', type: 'AutoField', key: 'PK' },
+          { name: 'titulo', type: 'CharField' },
+          { name: 'cuerpo', type: 'TextField' },
+          { name: 'estado', type: 'CharField' },
+          { name: 'autor_id', type: 'ForeignKey', key: 'FK' }
+        ]
+      },
+      {
+        name: 'Categoria',
+        columns: [
+          { name: 'id', type: 'AutoField', key: 'PK' },
+          { name: 'nombre', type: 'CharField' }
+        ]
+      }
+    ],
+    apiEndpoints: [
+      { method: 'GET', path: '/api/v1/noticias/', description: 'Obtiene las noticias en estado PUBLICADO para la portada pública', response: '[{ id, titulo, autor }]' },
+      { method: 'POST', path: '/api/v1/noticias/borrador/', description: 'Registra un borrador creado por un usuario periodista', parameters: '{ titulo, cuerpo }', response: '{ id, estado: "PENDIENTE" }' }
+    ],
+    retrospective: {
+      challenge: 'Diseñar un flujo editorial claro donde periodistas escriben pero sólo los editores pueden publicar en la portada.',
+      juniorMistake: 'Configuración inicial dependiente de Oracle 19c cliente pesado local que dificultaba el despliegue rápido.',
+      modernRefactor: 'Desacoplamiento mediante Django ORM con backend PostgreSQL/SQLite agnóstico al motor de base de datos.'
+    }
+  }
+};
+
+const currentDocs = techDocsMap[project.id] || techDocsMap['asesorias-borotto'];
+---
+
+<Layout title={`${project.title} · Estudio de Caso & Demo | Franco Borotto`}>
+  <Navbar />
+
+  <main style="padding-top: 6rem; padding-bottom: 5rem;">
+    <div class="container">
+      {/* Breadcrumb & Navigation */}
+      <a href="/#proyectos" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Volver a Proyectos
+      </a>
+
+      {/* Project Header */}
+      <div class="project-header glass-card">
+        <div class="header-top">
+          <span class="category-badge">{project.category} · {project.year}</span>
+          <span class="role-badge">Rol: {project.role}</span>
+        </div>
+
+        <h1 class="header-title">{project.title}</h1>
+        <h2 class="header-subtitle">{project.subtitle}</h2>
+        <p class="header-summary">{project.summary}</p>
+
+        {project.teamCredits && (
+          <div class="credits-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>{project.teamCredits}</span>
+          </div>
+        )}
+
+        <div class="header-tech">
+          {project.techStack.map(t => (
+            <span class="tech-pill">{t.name}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 1: Interactive Sandbox Demo */}
+      <div class="demo-section">
+        <div class="section-title-box">
+          <span class="badge badge-sandbox">🕹️ Sandbox Interactivo</span>
+          <h3 class="section-heading">Demostración en Vivo & DevTools</h3>
+        </div>
+
+        {project.id === 'asesorias-borotto' && <AsesoriasBorottoDemo client:load />}
+        {project.id === 'inventpro' && <InventProDemo client:load />}
+        {project.id === 'registra-app' && <RegistraAppDemo client:load />}
+        {project.id === 'caosnews' && <CaosNewsDemo client:load />}
+      </div>
+
+      {/* Section 2: Technical Specs & Documentation */}
+      <ProjectTechnicalDocs
+        client:load
+        projectTitle={project.title}
+        architectureDescription={currentDocs.architectureDescription}
+        erdTables={currentDocs.erdTables}
+        apiEndpoints={currentDocs.apiEndpoints}
+        retrospective={currentDocs.retrospective}
+      />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--cyan-light);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    transition: var(--transition-fast);
+  }
+
+  .back-link:hover {
+    transform: translateX(-4px);
+  }
+
+  .project-header {
+    margin-bottom: 3rem;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .category-badge {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--cyan-light);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid var(--border-cyan);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+  }
+
+  .role-badge {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .header-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 0.25rem;
+  }
+
+  .header-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .header-summary {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .credits-box {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--cyan-light);
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid var(--border-cyan);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tech-pill {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+  }
+
+  .demo-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-title-box {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-heading {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-top: 0.5rem;
+  }
+</style>

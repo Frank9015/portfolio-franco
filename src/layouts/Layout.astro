@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+import { PROFILE_CONFIG } from '../config/profile';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = `${PROFILE_CONFIG.personal.name} | ${PROFILE_CONFIG.personal.title}`,
+  description = PROFILE_CONFIG.personal.shortBio 
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="generator" content={Astro.generator} />
+
+  <!-- SEO Meta Tags -->
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="author" content={PROFILE_CONFIG.personal.name} />
+  <meta name="keywords" content="Franco Borotto, Ingeniero en Informática, Desarrollador Full-Stack, Astro, React, Node.js, Django, Chile, Portfolio" />
+
+  <!-- OpenGraph / Facebook / LinkedIn -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:locale" content="es_CL" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+</head>
+<body>
+  <slot />
+</body>
+</html>

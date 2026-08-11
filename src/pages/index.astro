@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Timeline from '../components/Timeline.astro';
+import SkillGrid from '../components/SkillGrid.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ContactForm from '../components/ContactForm.astro';
+import Footer from '../components/Footer.astro';
+import { PROFILE_CONFIG } from '../config/profile';
+---
+
+<Layout>
+  <Navbar />
+
+  <main>
+    <Hero />
+    <About />
+    <Timeline />
+
+    <!-- Section Proyectos -->
+    <section id="proyectos" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Portafolio Interactivo</span>
+          <h2 class="section-title">Proyectos Destacados</h2>
+          <p class="section-description">
+            Estudios de caso de ingeniería con Demos Interactivos, Inspector de Red API y Documentación Técnica completa.
+          </p>
+        </div>
+
+        <div class="projects-grid">
+          {PROFILE_CONFIG.projects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <SkillGrid />
+    <ContactForm />
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 600px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

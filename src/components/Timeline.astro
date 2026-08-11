@@ -1,0 +1,165 @@
+---
+import { PROFILE_CONFIG } from '../config/profile';
+---
+
+<section id="experiencia" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Trayectoria</span>
+      <h2 class="section-title">Experiencia Laboral & Formación</h2>
+      <p class="section-description">
+        Experiencia práctica en entorno institucional real y sólida formación universitaria en ingeniería de software.
+      </p>
+    </div>
+
+    <div class="timeline">
+      {PROFILE_CONFIG.experience.map((exp) => (
+        <div class="timeline-item glass-card">
+          <div class="timeline-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="timeline-header">
+            <div>
+              <span class="company-tag">{exp.type}</span>
+              <h3 class="company-name">{exp.company}</h3>
+              <h4 class="role-title">{exp.role}</h4>
+            </div>
+            <div class="timeline-meta">
+              <span class="period">{exp.period}</span>
+              <span class="location">{exp.location}</span>
+            </div>
+          </div>
+          <p class="exp-desc">{exp.description}</p>
+          <ul class="exp-bullets">
+            {exp.bullets.map((bullet) => (
+              <li>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .timeline-badge {
+    position: absolute;
+    top: 2rem;
+    left: -1rem;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--cyan) 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px var(--primary-glow);
+  }
+
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+  }
+
+  .company-tag {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--cyan-light);
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid var(--border-cyan);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .company-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+
+  .role-title {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .timeline-meta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .period {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .location {
+    font-size: 0.85rem;
+    color: var(--text-subtle);
+  }
+
+  .exp-desc {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-left: 1rem;
+  }
+
+  .exp-bullets li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .exp-bullets li svg {
+    color: var(--emerald-light);
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+  }
+
+  @media (max-width: 600px) {
+    .timeline-header {
+      flex-direction: column;
+    }
+    .timeline-meta {
+      text-align: left;
+    }
+  }
+</style>

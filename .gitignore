@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.astro/
+.vercel/
+
+# Docker Local Demos
+docker_demos/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE & System
+.DS_Store
+*.log
+.vscode/
+.idea/

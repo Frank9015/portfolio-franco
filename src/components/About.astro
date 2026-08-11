@@ -1,0 +1,150 @@
+---
+import { PROFILE_CONFIG } from '../config/profile';
+---
+
+<section id="sobre-mi" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Perfil Profesional</span>
+      <h2 class="section-title">Sobre Mí & Visión Técnica</h2>
+      <p class="section-description">
+        Ingeniero en Informática con enfoque en desarrollo moderno de software, arquitectura de sistemas y diseño enfocado en la experiencia del usuario.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-main glass-card">
+        <h3 class="about-subtitle">Mi Enfoque de Ingeniería</h3>
+        <p class="about-text">
+          {PROFILE_CONFIG.personal.fullBio}
+        </p>
+
+        <div class="education-card">
+          <div class="edu-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </div>
+          <div class="edu-info">
+            <span class="edu-degree">{PROFILE_CONFIG.education.degree}</span>
+            <span class="edu-inst">{PROFILE_CONFIG.education.institution} · {PROFILE_CONFIG.education.period}</span>
+            <p class="edu-focus">{PROFILE_CONFIG.education.focus}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="strengths-list">
+        {PROFILE_CONFIG.strengths.map((item, index) => (
+          <div class="strength-card glass-card">
+            <div class="strength-num">0{index + 1}</div>
+            <h4 class="strength-title">{item.title}</h4>
+            <p class="strength-desc">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 2rem;
+  }
+
+  .about-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+    color: var(--text-main);
+  }
+
+  .about-text {
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+  }
+
+  .education-card {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+  }
+
+  .edu-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .edu-degree {
+    display: block;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-main);
+  }
+
+  .edu-inst {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--cyan-light);
+    font-family: var(--font-mono);
+    margin-bottom: 0.4rem;
+  }
+
+  .edu-focus {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .strengths-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .strength-card {
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .strength-num {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 0.5rem;
+  }
+
+  .strength-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .strength-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 992px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .strengths-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

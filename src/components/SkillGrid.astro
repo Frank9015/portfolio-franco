@@ -1,0 +1,105 @@
+---
+import { PROFILE_CONFIG } from '../config/profile';
+
+const categories = [
+  { id: 'lenguajes', title: 'Lenguajes de Programación', items: PROFILE_CONFIG.skills.lenguajes },
+  { id: 'frameworks', title: 'Frameworks & Librerías UI', items: PROFILE_CONFIG.skills.frameworks },
+  { id: 'backend', title: 'Backend, APIs & Integración', items: PROFILE_CONFIG.skills.backend },
+  { id: 'basesDeDatos', title: 'Bases de Datos Relacionales', items: PROFILE_CONFIG.skills.basesDeDatos },
+  { id: 'herramientas', title: 'Herramientas, Cloud & Análisis', items: PROFILE_CONFIG.skills.herramientas },
+];
+---
+
+<section id="habilidades" class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Dominio Técnico</span>
+      <h2 class="section-title">Habilidades & Tecnologías</h2>
+      <p class="section-description">
+        Conjunto de herramientas, lenguajes y tecnologías utilizadas en proyectos de producción, freelance y desarrollo académico.
+      </p>
+    </div>
+
+    <div class="skills-wrapper">
+      {categories.map((cat) => (
+        <div class="skill-category glass-card">
+          <h3 class="category-title">{cat.title}</h3>
+          <div class="skill-grid">
+            {cat.items.map((skill) => (
+              <div class="skill-badge-item">
+                <span class="skill-name">{skill.name}</span>
+                <span class="skill-level">{skill.level}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .skill-category {
+    padding: 1.75rem;
+  }
+
+  .category-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .category-title::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+  }
+
+  .skill-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .skill-badge-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.6rem 0.9rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+  }
+
+  .skill-badge-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: var(--border-glow);
+    transform: translateY(-2px);
+  }
+
+  .skill-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-main);
+  }
+
+  .skill-level {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--cyan-light);
+    margin-top: 0.15rem;
+  }
+</style>

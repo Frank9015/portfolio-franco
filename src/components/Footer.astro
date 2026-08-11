@@ -1,0 +1,111 @@
+---
+import { PROFILE_CONFIG } from '../config/profile';
+---
+
+<footer class="footer">
+  <div class="container footer-container">
+    <div class="footer-left">
+      <span class="footer-brand">Franco Borotto</span>
+      <span class="footer-title">{PROFILE_CONFIG.personal.title} · Santiago, Chile</span>
+    </div>
+
+    <div class="footer-center">
+      <a href="#inicio">Inicio</a>
+      <a href="#sobre-mi">Sobre Mí</a>
+      <a href="#proyectos">Proyectos</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+
+    <div class="footer-right">
+      <span class="footer-copy">© {new Date().getFullYear()} Franco Borotto Vidal</span>
+      <a href="#inicio" class="back-to-top" title="Volver arriba">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: rgba(6, 9, 19, 0.95);
+    border-top: 1px solid var(--border-subtle);
+    padding: 2.5rem 0;
+    margin-top: 4rem;
+  }
+
+  .footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer-brand {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text-main);
+  }
+
+  .footer-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .footer-center {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-center a {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    transition: var(--transition-fast);
+  }
+
+  .footer-center a:hover {
+    color: var(--cyan-light);
+  }
+
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-size: 0.85rem;
+    color: var(--text-subtle);
+  }
+
+  .back-to-top {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+  }
+
+  .back-to-top:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-3px);
+  }
+
+  @media (max-width: 768px) {
+    .footer-container {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>
