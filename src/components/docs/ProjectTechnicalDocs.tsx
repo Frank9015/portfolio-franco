@@ -32,7 +32,9 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
   apiEndpoints,
   retrospective
 }) => {
-  const [activeTab, setActiveTab] = useState<'architecture' | 'erd' | 'api' | 'retro' | 'setup'>('architecture');
+  const [activeTab, setActiveTab] = useState<'architecture' | 'erd' | 'api' | 'retro'>('architecture');
+
+  const lowerTitle = projectTitle.toLowerCase();
 
   return (
     <div style={{
@@ -86,7 +88,7 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
               fontSize: '0.88rem'
             }}
           >
-            🏗️ Arquitectura
+            🏗️ Arquitectura del Sistema
           </button>
 
           <button
@@ -136,26 +138,10 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
           >
             🧠 Retrospectiva & Growth
           </button>
-
-          <button
-            onClick={() => setActiveTab('setup')}
-            style={{
-              padding: '0.5rem 1rem',
-              borderRadius: '8px',
-              border: activeTab === 'setup' ? '1px solid #f59e0b' : '1px solid rgba(255,255,255,0.08)',
-              background: activeTab === 'setup' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255,255,255,0.03)',
-              color: activeTab === 'setup' ? '#fbbf24' : '#94a3b8',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '0.88rem'
-            }}
-          >
-            🛠️ Guía de Ejecución Local
-          </button>
         </div>
       </div>
 
-      {/* Tab 1: Architecture */}
+      {/* Tab 1: Visual Architecture Diagram */}
       {activeTab === 'architecture' && (
         <div>
           <h4 style={{ fontSize: '1.2rem', marginBottom: '0.75rem', color: '#22d3ee' }}>Visión General de la Arquitectura</h4>
@@ -163,30 +149,230 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
             {architectureDescription}
           </p>
 
+          {/* Visual Architecture Box (GitHub Mermaid Style Visual Diagram) */}
           <div style={{
-            background: '#060913',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '12px',
-            padding: '1.5rem',
-            fontFamily: "'Fira Code', monospace",
-            fontSize: '0.85rem'
+            background: '#090d16',
+            border: '1px solid rgba(99, 102, 241, 0.25)',
+            borderRadius: '16px',
+            padding: '2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '1.25rem',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
           }}>
-            <div style={{ color: '#818cf8', fontWeight: '700', marginBottom: '0.5rem' }}>// Flow Diagram</div>
-            <div style={{ color: '#a7f3d0', whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-{`[Client UIs: SPA / Mobile App / Web Browser]
-         │
-         │  (HTTP / REST APIs JSON)
-         ▼
-[API Gateway & Middlewares (Auth JWT / Role Check)]
-         │
-         │  (Business Logic & Validation)
-         ▼
-[Backend Services (Node.js Express / Django ORM)]
-         │
-         │  (SQL Queries)
-         ▼
-[Relational Database (PostgreSQL / SQLite / Oracle)]`}
+            <div style={{
+              fontSize: '0.75rem',
+              fontFamily: "'Fira Code', monospace",
+              color: '#818cf8',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              alignSelf: 'flex-start'
+            }}>
+              Diagrama de Bloques & Flujo de Datos
             </div>
+
+            {/* Asesorías Borotto Visual Diagram */}
+            {lowerTitle.includes('asesor') && (
+              <>
+                <div style={nodeBoxStyle('#6366f1')}>
+                  <span style={iconStyle}>💻</span>
+                  <div>
+                    <strong style={nodeTitleStyle}>Cliente / Navegador Web</strong>
+                    <div style={nodeSubtitleStyle}>HTML5 · Vanilla CSS · JavaScript (Astro SSR)</div>
+                  </div>
+                </div>
+
+                <div style={arrowStyle}>↓ HTTP Requests / Rendered SSR Page</div>
+
+                <div style={nodeBoxStyle('#06b6d4')}>
+                  <span style={iconStyle}>⚡</span>
+                  <div>
+                    <strong style={nodeTitleStyle}>Astro v6 SSR / Node.js Engine</strong>
+                    <div style={nodeSubtitleStyle}>Vercel Serverless Functions</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', width: '100%', marginTop: '0.5rem' }}>
+                  <div style={subNodeBoxStyle('#10b981')}>
+                    <span style={iconStyle}>🗄️</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>PostgreSQL Database</strong>
+                      <div style={nodeSubtitleStyle}>Prisma ORM (Vercel Postgres)</div>
+                    </div>
+                  </div>
+
+                  <div style={subNodeBoxStyle('#f59e0b')}>
+                    <span style={iconStyle}>🔑</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>Sistema Anti-Spam Reseñas</strong>
+                      <div style={nodeSubtitleStyle}>Tokens UUID de un solo uso</div>
+                    </div>
+                  </div>
+
+                  <div style={subNodeBoxStyle('#ec4899')}>
+                    <span style={iconStyle}>🔐</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>Panel Admin /admin</strong>
+                      <div style={nodeSubtitleStyle}>Gestor CMS de Servicios & Planes</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* InventPro Visual Diagram */}
+            {lowerTitle.includes('inventpro') && (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
+                  <div style={nodeBoxStyle('#6366f1')}>
+                    <span style={iconStyle}>💻</span>
+                    <div>
+                      <strong style={nodeTitleStyle}>Web Gerencia (React 19)</strong>
+                      <div style={nodeSubtitleStyle}>Consola Admin & Stock (Vite)</div>
+                    </div>
+                  </div>
+
+                  <div style={nodeBoxStyle('#ec4899')}>
+                    <span style={iconStyle}>📱</span>
+                    <div>
+                      <strong style={nodeTitleStyle}>App Bodeguero (Expo Móvil)</strong>
+                      <div style={nodeSubtitleStyle}>Control Móvil en Bodega</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={arrowStyle}>↓ REST API JSON Call + JWT Auth Bearer Token</div>
+
+                <div style={nodeBoxStyle('#06b6d4')}>
+                  <span style={iconStyle}>🚀</span>
+                  <div>
+                    <strong style={nodeTitleStyle}>Backend Node.js & Express REST API</strong>
+                    <div style={nodeSubtitleStyle}>Zod Validations · Helmet · Winston Logging</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%', marginTop: '0.5rem' }}>
+                  <div style={subNodeBoxStyle('#10b981')}>
+                    <span style={iconStyle}>🗄️</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>PostgreSQL 16 Engine</strong>
+                      <div style={nodeSubtitleStyle}>Sequelize ORM (Schema inventpro_user)</div>
+                    </div>
+                  </div>
+
+                  <div style={subNodeBoxStyle('#8b5cf6')}>
+                    <span style={iconStyle}>📑</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>Swagger OpenAPI Console</strong>
+                      <div style={nodeSubtitleStyle}>Documentación REST /api-docs/</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Registra APP Visual Diagram */}
+            {lowerTitle.includes('registra') && (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
+                  <div style={nodeBoxStyle('#6366f1')}>
+                    <span style={iconStyle}>💻</span>
+                    <div>
+                      <strong style={nodeTitleStyle}>Web Docente (Django Web)</strong>
+                      <div style={nodeSubtitleStyle}>Apertura de Clase & Monitoreo</div>
+                    </div>
+                  </div>
+
+                  <div style={nodeBoxStyle('#38bdf8')}>
+                    <span style={iconStyle}>📱</span>
+                    <div>
+                      <strong style={nodeTitleStyle}>App Alumno (Ionic Mobile)</strong>
+                      <div style={nodeSubtitleStyle}>Escáner QR & Asistencia</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={arrowStyle}>↓ HTTP Requests & REST API JSON</div>
+
+                <div style={nodeBoxStyle('#06b6d4')}>
+                  <span style={iconStyle}>🐍</span>
+                  <div>
+                    <strong style={nodeTitleStyle}>Servidor Django 4.1 & REST Framework</strong>
+                    <div style={nodeSubtitleStyle}>Python 3.11 · X_FRAME_OPTIONS ALLOWALL</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%', marginTop: '0.5rem' }}>
+                  <div style={subNodeBoxStyle('#f59e0b')}>
+                    <span style={iconStyle}>🔲</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>Pillow QR Engine</strong>
+                      <div style={nodeSubtitleStyle}>Generación Dinámica de Código QR</div>
+                    </div>
+                  </div>
+
+                  <div style={subNodeBoxStyle('#10b981')}>
+                    <span style={iconStyle}>🗄️</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>Base de Datos SQLite3</strong>
+                      <div style={nodeSubtitleStyle}>Django ORM (Cursos, Alumnos, Clases)</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* CaosNews Visual Diagram */}
+            {lowerTitle.includes('caos') && (
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
+                  <div style={nodeBoxStyle('#6366f1')}>
+                    <span style={iconStyle}>🌐</span>
+                    <div>
+                      <strong style={nodeTitleStyle}>Lector / Público General</strong>
+                      <div style={nodeSubtitleStyle}>Portada por Categorías</div>
+                    </div>
+                  </div>
+
+                  <div style={nodeBoxStyle('#f59e0b')}>
+                    <span style={iconStyle}>✍️</span>
+                    <div>
+                      <strong style={nodeTitleStyle}>Periodistas & Editores</strong>
+                      <div style={nodeSubtitleStyle}>Redacción & Aprobación Editorial</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={arrowStyle}>↓ HTTP Requests & Auth Session Cookie</div>
+
+                <div style={nodeBoxStyle('#06b6d4')}>
+                  <span style={iconStyle}>📰</span>
+                  <div>
+                    <strong style={nodeTitleStyle}>Servidor MVT Django 4.2</strong>
+                    <div style={nodeSubtitleStyle}>Control de Acceso basado en Roles (RBAC)</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%', marginTop: '0.5rem' }}>
+                  <div style={subNodeBoxStyle('#10b981')}>
+                    <span style={iconStyle}>🗄️</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>Base de Datos Relacional</strong>
+                      <div style={nodeSubtitleStyle}>SQLite3 / Oracle 19c Engine</div>
+                    </div>
+                  </div>
+
+                  <div style={subNodeBoxStyle('#ec4899')}>
+                    <span style={iconStyle}>🖼️</span>
+                    <div>
+                      <strong style={subNodeTitleStyle}>Almacenamiento Media</strong>
+                      <div style={nodeSubtitleStyle}>Directorio /media/ Fotografías</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -330,55 +516,66 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
           </div>
         </div>
       )}
-
-      {/* Tab 5: Local Execution Guide */}
-      {activeTab === 'setup' && (
-        <div>
-          <h4 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#fbbf24' }}>🛠️ Guía Paso a Paso de Ejecución Local</h4>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div style={{
-              background: '#060913',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '10px',
-              padding: '1.25rem'
-            }}>
-              <h5 style={{ color: '#fbbf24', fontSize: '1rem', marginBottom: '0.5rem' }}>1. Levantamiento con Docker Compose (Recomendado 1-Click):</h5>
-              <pre style={{
-                background: '#0a0f1d',
-                padding: '0.85rem 1rem',
-                borderRadius: '8px',
-                color: '#a7f3d0',
-                fontFamily: "'Fira Code', monospace",
-                fontSize: '0.85rem',
-                overflowX: 'auto'
-              }}>
-{`git clone https://github.com/Frank9015/portfolio-franco.git
-cd portfolio-franco/docker_demos
-docker compose up -d --build`}
-              </pre>
-            </div>
-
-            <div style={{
-              background: '#060913',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '10px',
-              padding: '1.25rem'
-            }}>
-              <h5 style={{ color: '#818cf8', fontSize: '1rem', marginBottom: '0.5rem' }}>2. Documentación Markdown Completa del Repositorio:</h5>
-              <p style={{ color: '#cbd5e1', fontSize: '0.9rem', lineHeight: 1.6 }}>
-                Puedes consultar los archivos de arquitectura, diagramas relacionales completos y guías de variables de entorno <code>.env</code> directamente en la carpeta <code>docs/</code> del proyecto:
-              </p>
-              <ul style={{ color: '#38bdf8', fontFamily: "'Fira Code', monospace", fontSize: '0.85rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                <li>📄 docs/asesorias-borotto.md</li>
-                <li>📄 docs/inventpro.md</li>
-                <li>📄 docs/registra-app.md</li>
-                <li>📄 docs/caosnews.md</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
+};
+
+// Diagram Helpers & Styles
+const nodeBoxStyle = (borderColor: string): React.CSSProperties => ({
+  width: '100%',
+  padding: '1rem 1.25rem',
+  background: 'rgba(15, 23, 42, 0.9)',
+  border: `1.5px solid ${borderColor}`,
+  borderRadius: '12px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  boxShadow: `0 4px 20px ${borderColor}22`
+});
+
+const subNodeBoxStyle = (borderColor: string): React.CSSProperties => ({
+  padding: '0.85rem 1rem',
+  background: 'rgba(15, 23, 42, 0.8)',
+  border: `1px solid ${borderColor}`,
+  borderRadius: '10px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.75rem'
+});
+
+const iconStyle: React.CSSProperties = {
+  fontSize: '1.5rem',
+  flexShrink: 0
+};
+
+const nodeTitleStyle: React.CSSProperties = {
+  display: 'block',
+  fontSize: '0.98rem',
+  color: '#f8fafc',
+  fontWeight: 700
+};
+
+const subNodeTitleStyle: React.CSSProperties = {
+  display: 'block',
+  fontSize: '0.88rem',
+  color: '#f8fafc',
+  fontWeight: 600
+};
+
+const nodeSubtitleStyle: React.CSSProperties = {
+  fontSize: '0.78rem',
+  color: '#94a3b8',
+  fontFamily: "'Fira Code', monospace",
+  marginTop: '0.15rem'
+};
+
+const arrowStyle: React.CSSProperties = {
+  color: '#a7f3d0',
+  fontFamily: "'Fira Code', monospace",
+  fontSize: '0.82rem',
+  fontWeight: 700,
+  padding: '0.2rem 0.6rem',
+  background: 'rgba(16, 185, 129, 0.1)',
+  borderRadius: '20px',
+  border: '1px solid rgba(16, 185, 129, 0.3)'
 };
