@@ -5,7 +5,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+ENV CHOKIDAR_USEPOLLING=false
+ENV WATCHPACK_POLLING=false
 
 EXPOSE 8003
 
