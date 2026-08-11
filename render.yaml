@@ -1,0 +1,54 @@
+services:
+  # 1. RegistraApp Web Docente
+  - type: web
+    name: registra-web-demo
+    env: docker
+    dockerfilePath: ./docker_demos/registra_app_web/Dockerfile
+    dockerContext: ./docker_demos/registra_app_web
+    plan: free
+    region: oregon
+
+  # 2. RegistraApp Mobile Ionic
+  - type: web
+    name: registra-mobile-demo
+    env: docker
+    dockerfilePath: ./docker_demos/registra_app_mobile/Dockerfile
+    dockerContext: ./docker_demos/registra_app_mobile
+    plan: free
+    region: oregon
+
+  # 3. CaosNews Portal
+  - type: web
+    name: caosnews-demo
+    env: docker
+    dockerfilePath: ./docker_demos/caosnews/Dockerfile
+    dockerContext: ./docker_demos/caosnews
+    plan: free
+    region: oregon
+
+  # 4. InventPro Backend REST API
+  - type: web
+    name: inventpro-backend-demo
+    env: docker
+    dockerfilePath: ./docker_demos/inventpro_backend/Dockerfile
+    dockerContext: ./docker_demos/inventpro_backend
+    plan: free
+    region: oregon
+
+  # 5. InventPro Web Admin SPA
+  - type: web
+    name: inventpro-web-demo
+    env: docker
+    dockerfilePath: ./docker_demos/inventpro_web/Dockerfile
+    dockerContext: ./docker_demos/inventpro_web
+    plan: free
+    region: oregon
+
+  # 6. InventPro App Bodeguero Expo
+  - type: web
+    name: inventpro-bodeguero-demo
+    env: docker
+    dockerfilePath: ./docker_demos/inventpro_bodeguero/Dockerfile
+    dockerContext: ./docker_demos/inventpro_bodeguero
+    plan: free
+    region: oregon
