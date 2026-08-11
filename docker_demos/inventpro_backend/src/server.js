@@ -14,21 +14,21 @@ let server
 
 async function bootstrap () {
   try {
-    // Verifica conexión a la base
-    await sequelize.authenticate()
-    console.log('✅ DB authenticated.')
+    // Verifica conexión a la base (con fallback suave si no hay DB configurada)
+    try {
+      await sequelize.authenticate()
+      console.log('✅ DB authenticated.')
 
-    if (DB_SYNC_MODE === 'safe') {
-      console.log('ℹ️  Running sequelize.sync() (safe, no alter)...')
-      await sequelize.sync()
-      console.log('✅ DB sync safe completed.')
-    } else if (DB_SYNC_MODE !== 'off') {
-      console.warn(`⚠️  DB_SYNC="${process.env.DB_SYNC}" no es válido. Usa "safe" u "off". Continuando sin sync.`)
-    } else {
-      console.log('⏭️  Skipping sequelize.sync(). Use migrations to evolve schema.')
+      if (DB_SYNC_MODE === 'safe') {
+        console.log('ℹ️  Running sequelize.sync() (safe, no alter)...')
+        await sequelize.sync()
+        console.log('✅ DB sync safe completed.')
+      }
+    } catch (dbErr) {
+      console.warn('⚠️ DB Connection warning (running in standalone API & Swagger mode):', dbErr.message)
     }
 
-    // Levanta el servidor HTTP
+    // Levanta el servidor HTTP (Swagger & Endpoints)
     server = app.listen(PORT, HOST, () => {
       console.log(`✅ Server running on http://${HOST}:${PORT}`)
       console.log(`🌱 NODE_ENV=${process.env.NODE_ENV || 'development'} • DB_SYNC=${DB_SYNC_MODE}`)
@@ -40,7 +40,7 @@ async function bootstrap () {
         console.log('🔑 Usuario admin creado automáticamente (ADMIN_EMAIL / ADMIN_PASSWORD).')
       }
     } catch (e) {
-      console.error('⚠️  No se pudo verificar/crear el admin inicial:', e.message)
+      // Ignorar si no hay DB
     }
 
     // Maneja errores del servidor (p.ej., EADDRINUSE)
