@@ -26,8 +26,8 @@ export const PROFILE_CONFIG = {
   personal: {
     name: "Franco Alfredo Borotto Vidal",
     title: "Ingeniero en Informática (Recién Egresado)",
-    shortBio: "Ingeniero en Informática recién egresado de Duoc UC. Apasionado por el desarrollo web & móvil full-stack, bases de datos y arquitectura de software. Motivado por aportar valor desde el primer día.",
-    fullBio: "Ingeniero en Informática recién egresado por Duoc UC con formación sólida en desarrollo de software, modelado de bases de datos, APIs REST y seguridad. Cuento con experiencia práctica en entornos reales (práctica profesional en la Contraloría General de la República de Chile en Liferay DXP), desarrollo full-stack (Astro, React, Node.js, Django, PostgreSQL) y aplicaciones móviles (React Native/Ionic). Aprendo rápido, me adapto con facilidad y me motiva demostrar conocimiento técnico entregando proyectos reales y bien estructurados.",
+    shortBio: "Ingeniero en Informática recién egresado por Duoc UC. Formación integral y entusiasta por aprender y crecer en múltiples áreas TI: Desarrollo de Software, Soporte Técnico, Ciberseguridad, Redes y Consultoría Informática.",
+    fullBio: "Ingeniero en Informática recién egresado por Duoc UC con formación amplia y versátil en tecnologías de la información. Poseo sólidos conocimientos en desarrollo web y móvil (Astro, React, Node.js, Python, Django, PostgreSQL), gestión de bases de datos relacionales, administración de plataformas enterprise (experiencia práctica en la Contraloría General de la República de Chile en Liferay DXP), así como fundamentos de ciberseguridad, redes y soporte técnico. Destaco por mi rápida adaptabilidad, curiosidad constante y motivación para incorporarme a equipos de Desarrollo, Soporte TI, Análisis de Sistemas o Seguridad de la Información.",
     email: "francoborottov@gmail.com",
     phone: "+56 9 9894 8474",
     location: "Santiago, Chile",
@@ -44,10 +44,10 @@ export const PROFILE_CONFIG = {
   },
 
   strengths: [
-    { title: "Arquitectura Clean Code", desc: "Diseño modular de software con separación de responsabilidades y código mantenible." },
-    { title: "Resolución de Problemas", desc: "Pensamiento analítico profundo para rastrear y solucionar bugs complejos desde la raíz." },
-    { title: "Enfoque Full-Stack", desc: "Dominio desde el modelado de BD (PostgreSQL, SQLite, Oracle) hasta UIs modernas en React/Astro." },
-    { title: "Adaptabilidad & Aprendizaje", desc: "Rápida curva de aprendizaje en nuevos frameworks, integraciones y plataformas enterprise." }
+    { title: "Versatilidad & Adaptabilidad TI", desc: "Apertura y capacidad para integrarme en áreas de Desarrollo, Soporte TI, Ciberseguridad o Consultoría." },
+    { title: "Resolución de Problemas", desc: "Pensamiento analítico para diagnosticar fallas en sistemas, bases de datos y redes desde la raíz." },
+    { title: "Desarrollo & Bases de Datos", desc: "Modelado relacional (PostgreSQL, SQLite, Oracle) y desarrollo full-stack moderno." },
+    { title: "Aprendizaje Continuo", desc: "Motivación permanente por especializarme en nuevas tecnologías y estándares de la industria." }
   ],
 
   skills: {
