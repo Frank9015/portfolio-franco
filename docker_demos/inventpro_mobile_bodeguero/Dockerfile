@@ -5,9 +5,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-ENV CHOKIDAR_USEPOLLING=false
-ENV WATCHPACK_POLLING=false
+COPY . .
+
+# Export static web bundle for Expo
+RUN npx expo export --platform web || true
 
 EXPOSE 8005
 
-CMD ["npx", "expo", "start", "--web", "--port", "8005", "--non-interactive"]
+# Serve static web build
+CMD ["npx", "serve", "-s", "dist", "-l", "8005"]

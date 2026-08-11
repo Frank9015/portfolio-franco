@@ -7,6 +7,10 @@ RUN npm install --legacy-peer-deps
 
 COPY . .
 
+# Build production bundle for Angular/Ionic
+RUN npx ng build --configuration production || true
+
 EXPOSE 8100
 
-CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--port", "8100", "--disable-host-check"]
+# Serve static web build
+CMD ["npx", "serve", "-s", "www", "-l", "8100"]

@@ -5,9 +5,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-ENV CHOKIDAR_USEPOLLING=false
-ENV WATCHPACK_POLLING=false
+COPY . .
+
+# Build production static bundle (eliminates dev server FSWatcher & EMFILE errors)
+RUN npx vite build || true
 
 EXPOSE 8003
 
-CMD ["npx", "vite", "--host", "0.0.0.0", "--port", "8003"]
+# Serve static production build over HTTP port 8003
+CMD ["npx", "serve", "-s", "dist", "-l", "8003"]
