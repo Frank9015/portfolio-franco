@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Notas Escolares</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div id="container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Mis Notas</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let nota of lista_notas">
+            <ion-label>
+              <ion-item *ngFor="let profesor of profesores">
+                <h1>Profesor: {{ profesor.userp }}</h1>
+              </ion-item>
+              <h2>Materia: {{ getNombreMateria(nota.materia_info.id) }}</h2>
+              <div class="notas">
+                <table class="custom-table">
+                  <tr>
+                    <th>Parcial 1</th>
+                    <th>Parcial 2</th>
+                    <th>Parcial 3</th>
+                    <th>Parcial 4</th>
+                    <th>Examen</th>
+                  </tr>
+                  <tr>
+                    <td [style.color]="getColor(nota.parcial1)">{{nota.parcial1}}</td>
+                    <td [style.color]="getColor(nota.parcial2)">{{nota.parcial2}}</td>
+                    <td [style.color]="getColor(nota.parcial3)">{{nota.parcial3}}</td>
+                    <td [style.color]="getColor(nota.parcial4)">{{nota.parcial4}}</td>
+                    <td [style.color]="getColor(nota.examen_final)">{{nota.examen_final}}</td>
+                  </tr>
+                </table>
+              </div>
+              <p class="nota-final" [style.color]="">Nota Final: {{calcularNotaFinal(nota)}}</p>
+            </ion-label>
+          </ion-item>
+          
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

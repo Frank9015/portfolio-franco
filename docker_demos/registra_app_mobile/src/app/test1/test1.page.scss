@@ -1,0 +1,60 @@
+ion-content {
+  --ion-background-color: #000000;
+  overflow: hidden;
+  height: 100%;
+}
+
+.custom-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ddd;
+  color: #ffffff; /* Color de texto para que sea visible en el fondo blanco */
+}
+
+.custom-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #333;
+}
+
+.notas {
+  margin-top: 20px;
+}
+
+.nota-final {
+  font-size: 18px; /* Cambiar el tamaño de la fuente según sea necesario */
+  font-weight: bold;
+  color: #f9f9f9;
+  margin-top: 10px; /* Separación desde la tabla */
+}
+
+.notas p {
+  font-weight: bold;
+  color: #333;
+}
+
+.custom-table .examen {
+  background-color: #ffcccc;
+  font-weight: bold;
+  color: red; /* Color de texto rojo para la celda de examen */
+}
+
+
+.custom-table .nota-final-rojo {
+  color: red;
+}
+
+.custom-table .nota-final-naranja {
+  color: orange;
+}
+
+.custom-table .nota-final-verde {
+  color: green;
+}

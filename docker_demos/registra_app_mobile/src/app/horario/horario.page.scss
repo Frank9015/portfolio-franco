@@ -1,0 +1,41 @@
+ion-content {
+  --ion-background-color: #000000;
+  overflow: hidden;
+  height: 100%;
+}
+
+.class-card {
+  background-color: #5b595968; /* Fondo blanco para las tarjetas */
+  margin: 10px; /* Margen entre las tarjetas */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Sombra ligera */
+}
+
+.class-card ion-card-content {
+  font-size: 16px;
+  color: #fdfcfc;
+}
+
+.custom-ion-item {
+  background-color: #5b595968;
+  /* Otros estilos personalizados aquí */
+}
+
+
+.class-name {
+
+  font-size: 20px;
+  color: #fdfcfc;
+}
+
+ion-card-subtitle {
+  font-size: 25px;
+  font-weight: bold;
+  color: #fdfcfc; /* Color de texto para el subtítulo */
+}
+
+ion-card-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #fbfbfb; /* Color de texto para el título */
+}

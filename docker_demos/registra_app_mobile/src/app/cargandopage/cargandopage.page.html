@@ -1,0 +1,9 @@
+<ion-content class="ion-padding fullscreen-content" [fullscreen]="true">
+  <div class="loading-container">
+    <img src="assets/img/Logo.gif" alt="Loading Logo">
+    <div class="welcome-message" *ngIf="username">
+      Bienvenido {{ username }}
+    </div>
+    <img src="assets/img/Cargando.gif" alt="Loading Logo">
+  </div>
+</ion-content>

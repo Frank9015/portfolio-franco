@@ -1,0 +1,88 @@
+ion-content {
+  --ion-background-color: #000000;
+  overflow: hidden;
+  height: 100%;
+}
+
+.comunicados-card {
+  background-color: #faf8f8da;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.comunicados-title {
+  font-size: 24px;
+  color: #000000;
+  font-weight: bold;
+}
+
+.comunicados-icon {
+  color: #007bff;
+  font-size: 28px;
+  margin-right: 10px;
+}
+
+.urgente-segment {
+  background-color: #ff0000;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.general-segment {
+  background-color: #007bff;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.suspension-card {
+  background-color: #faf8f8da;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: #000000;
+}
+
+.suspension-title {
+  font-size: 20px;
+  color: #000000;
+  font-weight: bold;
+}
+
+.suspension-icon {
+  color: #ff0000;
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.suspension-subtitle {
+  font-size: 14px;
+  color: #000000;
+  font-weight: bold;
+}
+
+.ensayo-card {
+  background-color: #faf8f8da;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: #000000;
+}
+
+.ensayo-title {
+  font-size: 20px;
+  color: #000000;
+  font-weight: bold;
+}
+
+.ensayo-icon {
+  color: #007bff;
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.ensayo-subtitle {
+  font-size: 14px;
+  color: #000000;
+  font-weight: bold;
+}

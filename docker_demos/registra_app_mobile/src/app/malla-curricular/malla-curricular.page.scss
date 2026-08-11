@@ -1,0 +1,21 @@
+ion-content {
+  --ion-background-color: #000000;
+  overflow: hidden;
+  height: 100%;
+}
+
+.estado {
+  float: right;
+  font-weight: bold;
+}
+
+.aprobado {
+  color: green;
+}
+
+.reprobado {
+  color: red; 
+}
+.asistencia {
+  margin-top: 10px; 
+}

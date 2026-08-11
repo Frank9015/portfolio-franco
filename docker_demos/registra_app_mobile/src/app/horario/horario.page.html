@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Horario de Clases</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid *ngFor="let profesor of profesores">
+    <ion-row *ngFor="let materia of asignaturas" >
+      <ion-col size="12" size-sm="6" size-md="4">
+        <ion-card class="class-card">
+          <ion-card-header>
+            <ion-card-subtitle>{{ materia.horario }}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <h1 class="class-name">{{ materia.nombre }}</h1>
+            <h1 class="class-name">Sala: {{ materia.sala }}</h1>
+            <div class="profesores">
+                <h2>Profesor: {{ profesor.userp }}</h2>          
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+

@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/home', username]" >
+        <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Perfil</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="profile-content">
+    <ion-avatar>
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-avatar>
+    <ion-label class="username">Nombre de Usuario: {{ username }}</ion-label>
+    <ion-label class="username">Correo: {{ username }}@colegio.cl</ion-label>
+    <ion-label class="username">Region: Metropolitana</ion-label>
+    <ion-label class="username">Comuna: Puente Alto</ion-label>
+    <ion-button expand="full" color="dark" [routerLink]="['/bienvenida']" >Cerrar Sesion</ion-button>
+  </div>
+</ion-content>
+

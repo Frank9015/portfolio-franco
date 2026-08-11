@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/perfil', username]">
+        <ion-icon slot="icon-only"  name="person-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Bienvenido {{ username }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarSesion()">
+        <ion-icon slot="icon-only" name="exit"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+  <div class="logo-container">
+    <img src="assets/img/Logo.gif"  alt="Animated Logo">
+  </div>
+  <div id="container">
+    <ion-row >
+      <ion-col size="6" (click)="irANotasEscolares()">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="clipboard"></ion-icon>
+              Notas
+            </ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6" (click)="irAMallaCurricular()">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="book"></ion-icon>
+              Historial de Cursos
+            </ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="6" (click)="iracomunicados()">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="megaphone"></ion-icon>
+              Comunicados
+            </ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="6"  (click)="irAhorariodeclase()">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="calendar"></ion-icon>
+              Horario
+            </ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-col size="2"  (click)="irAnotaciones()">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="clipboard-outline"></ion-icon>
+            Anotaciones
+          </ion-card-title>
+        </ion-card-header>
+      </ion-card>
+    </ion-col>
+
+    <ion-card  (click)="abrirCamaraSimulada()">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="qr-code"></ion-icon>
+          Escanear Código QR
+        </ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,605 @@
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { showError, showInfo, showSuccess, showWarning } from "../lib/alerts";
+import {
+  useSettingsStore,
+  type CompanyProfile,
+  type NotificationItem,
+  type NotificationPreferences,
+} from "../store/settings";
+
+type SectionCardProps = {
+  title: string;
+  description: string;
+  hint?: string;
+  action?: ReactNode;
+  children: ReactNode;
+};
+
+const SectionCard = ({ title, description, hint, action, children }: SectionCardProps) => (
+  <section className="rounded-xl border border-gray-100 bg-white shadow-sm transition-colors dark:border-slate-700 dark:bg-slate-900">
+    <header className="flex flex-col gap-2 border-b border-gray-100 p-5 transition-colors md:flex-row md:items-center md:justify-between dark:border-slate-700">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-slate-100">{title}</h2>
+        <p className="text-sm text-gray-500 dark:text-slate-400">{description}</p>
+        {hint ? <p className="mt-1 text-xs text-blue-500 dark:text-blue-300">{hint}</p> : null}
+      </div>
+      {action ? <div className="mt-2 md:mt-0">{action}</div> : null}
+    </header>
+    <div className="p-5">{children}</div>
+  </section>
+);
+
+const Toggle = ({ checked, onChange, label }: { checked: boolean; onChange: (value: boolean) => void; label: string }) => (
+  <button
+    type="button"
+    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full border transition ${
+      checked
+        ? "border-blue-500 bg-blue-500 dark:border-blue-400 dark:bg-blue-500"
+        : "border-gray-300 bg-gray-200 dark:border-slate-600 dark:bg-slate-700"
+    }`}
+    onClick={() => onChange(!checked)}
+    aria-pressed={checked}
+  >
+    <span
+      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white keep-light shadow transition ${
+        checked ? "translate-x-5" : "translate-x-1"
+      }`}
+    />
+    <span className="sr-only">{label}</span>
+  </button>
+);
+
+const formatNotificationTimestamp = (value: string) =>
+  new Intl.DateTimeFormat("es-CL", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(value));
+
+const hasBrowserNotifications = typeof window !== "undefined" && "Notification" in window;
+
+const ensureBrowserPermission = async () => {
+  if (!hasBrowserNotifications) return false;
+  if (Notification.permission === "granted") return true;
+  if (Notification.permission === "denied") return false;
+  const result = await Notification.requestPermission();
+  return result === "granted";
+};
+
+const notifyBrowser = (title: string, body: string) => {
+  if (!hasBrowserNotifications) return;
+  if (Notification.permission !== "granted") return;
+  try {
+    new Notification(title, { body, icon: "/vite.svg", tag: `inventpro-${Date.now()}` });
+  } catch {
+    // ignored
+  }
+};
+
+const initialCompanyDraft = (company: CompanyProfile): CompanyProfile => ({ ...company });
+
+const quietHoursLabel = (prefs: NotificationPreferences) => {
+  const { enabled, start, end } = prefs.quietHours;
+  if (!enabled) return "Quiet hours disabled";
+  return `Quiet hours ${start} - ${end}`;
+};
+
+const themeButtonBase = "rounded-lg border px-4 py-2 text-sm font-medium shadow-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400";
+const themeButtonActive = "border-blue-500 bg-blue-50 text-blue-700 ring-2 ring-blue-200 ring-offset-1 dark:border-blue-400 dark:bg-blue-500/10 dark:text-blue-200 dark:ring-blue-500/40 dark:ring-offset-slate-900";
+const themeButtonInactive = "border-gray-200 text-gray-700 hover:bg-gray-50 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800";
+
+const SettingsPage = () => {
+  const company = useSettingsStore((state) => state.company);
+  const updateCompany = useSettingsStore((state) => state.updateCompany);
+  const notifications = useSettingsStore((state) => state.notifications);
+  const updateNotificationPreferences = useSettingsStore((state) => state.updateNotificationPreferences);
+  const addNotification = useSettingsStore((state) => state.addNotification);
+  const markAllNotificationsAsRead = useSettingsStore((state) => state.markAllNotificationsAsRead);
+  const clearNotifications = useSettingsStore((state) => state.clearNotifications);
+  const appearance = useSettingsStore((state) => state.appearance);
+  const setTheme = useSettingsStore((state) => state.setTheme);
+
+  const [companyDraft, setCompanyDraft] = useState<CompanyProfile>(() => initialCompanyDraft(company));
+  useEffect(() => {
+    setCompanyDraft(initialCompanyDraft(company));
+  }, [company]);
+
+  const [isSavingCompany, setIsSavingCompany] = useState(false);
+
+  const latestNotifications = useMemo(() => notifications.items.slice(0, 5), [notifications.items]);
+  const isDarkMode = appearance.theme === "dark";
+  const heroClass = isDarkMode
+    ? "bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-800"
+    : "bg-gradient-to-r from-blue-50 to-indigo-50";
+
+  const handleCompanySubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSavingCompany(true);
+    try {
+      updateCompany(companyDraft);
+      await showSuccess({
+        title: "Datos actualizados",
+        text: "La informacion de la compania fue guardada correctamente.",
+      });
+    } catch (err) {
+      console.error("[settings] company update failed", err);
+      await showError({
+        title: "No se pudo guardar",
+        text: "Revisa los datos ingresados e intenta nuevamente.",
+      });
+    } finally {
+      setIsSavingCompany(false);
+    }
+  };
+
+  const handlePushToggle = async (nextValue: boolean) => {
+    if (nextValue) {
+      if (!hasBrowserNotifications) {
+        await showWarning({
+          title: "Sin soporte en el navegador",
+          text: "Este navegador no permite notificaciones push.",
+        });
+        return;
+      }
+      const granted = await ensureBrowserPermission();
+      if (!granted) {
+        await showInfo({
+          title: "Permiso requerido",
+          text: "Activa las notificaciones del navegador para recibir alertas push.",
+        });
+        return;
+      }
+    }
+
+    updateNotificationPreferences({ pushEnabled: nextValue });
+    if (nextValue) {
+      notifyBrowser("Invent Pro", "Notificaciones push activadas correctamente.");
+    }
+  };
+
+  const handleTestNotification = async () => {
+    const record = addNotification({
+      title: "Prueba de notificacion",
+      message: "Esta es una notificacion de prueba desde configuracion.",
+      type: "system",
+      severity: "info",
+      meta: { source: "settings:test" },
+    });
+    if (notifications.preferences.pushEnabled) {
+      notifyBrowser(record.title, record.message);
+    }
+    await showSuccess({
+      title: "Notificacion enviada",
+      text: "La alerta se agrego al historial y aparecera en la campana.",
+    });
+  };
+
+  const handleQuietHoursChange = (field: "enabled" | "start" | "end", value: string | boolean) => {
+    if (field === "enabled" && typeof value === "boolean") {
+      updateNotificationPreferences({
+        quietHours: {
+          ...notifications.preferences.quietHours,
+          enabled: value,
+        },
+      });
+      return;
+    }
+    if (typeof value === "string") {
+      updateNotificationPreferences({
+        quietHours: {
+          ...notifications.preferences.quietHours,
+          [field]: value,
+        },
+      });
+    }
+  };
+
+  const handleNumberPreference = (key: keyof NotificationPreferences, raw: string) => {
+    const parsed = Number(raw);
+    if (!Number.isFinite(parsed) || parsed <= 0) return;
+    updateNotificationPreferences({ [key]: parsed } as Partial<NotificationPreferences>);
+  };
+
+  const handleThresholdChange = (raw: string) => {
+    const parsed = Number(raw);
+    if (!Number.isFinite(parsed) || parsed < 0) return;
+    updateNotificationPreferences({ lowStockThreshold: Math.max(0, Math.trunc(parsed)) });
+  };
+
+  const renderNotificationItem = (item: NotificationItem) => (
+    <li key={item.id} className="flex flex-col gap-1 rounded-lg border border-gray-100 p-3 dark:border-slate-700">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-semibold text-gray-800">{item.title}</span>
+        <span className="text-xs text-gray-400">{formatNotificationTimestamp(item.createdAt)}</span>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-slate-300">{item.message}</p>
+      <span
+        className={`w-fit rounded-full px-2 py-0.5 text-xs font-semibold ${
+          item.severity === "critical"
+            ? "bg-red-100 text-red-600"
+            : item.severity === "warning"
+            ? "bg-amber-100 text-amber-700"
+            : "bg-blue-100 text-blue-600"
+        }`}
+      >
+        {item.type === "low-stock" ? "Stock" : item.type}
+      </span>
+    </li>
+  );
+
+  return (
+    <div className="space-y-6">
+      <header className={`flex flex-col gap-4 rounded-2xl p-6 transition-colors md:flex-row md:items-center md:justify-between ${heroClass}`}>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-slate-100">Configuracion del sistema</h1>
+          <p className="text-sm text-gray-600 dark:text-slate-400">
+            Administra los datos de tu compania y las alertas en tiempo real.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="rounded-full border border-gray-200 bg-white px-4 py-2 shadow-inner dark:border-slate-700 dark:bg-slate-900">
+            <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400">Alertas</span>
+            <span className="ml-2 rounded-full bg-blue-100 px-3 py-0.5 text-xs font-bold text-blue-600">
+              {notifications.unreadCount} sin leer
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleTestNotification}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 dark:hover:bg-blue-500"
+          >
+            Enviar prueba
+          </button>
+        </div>
+      </header>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-colors dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase text-gray-400 dark:text-slate-400">Info de la compania</p>
+              <p className="text-base font-semibold text-gray-700 dark:text-slate-100">{company.displayName}</p>
+            </div>
+            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-600">{company.city}</span>
+          </div>
+          <p className="mt-3 text-sm text-gray-500 dark:text-slate-300">{company.address}</p>
+        </div>
+
+        <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-colors dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs uppercase text-gray-400 dark:text-slate-400">Notificaciones</p>
+          <p className="text-base font-semibold text-gray-700 dark:text-slate-100">
+            {notifications.preferences.lowStockEnabled ? "Monitoreo activo" : "Monitoreo desactivado"}
+          </p>
+          <p className="mt-2 text-xs text-gray-500 dark:text-slate-300">{quietHoursLabel(notifications.preferences)}</p>
+        </div>
+
+        <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition-colors dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-xs uppercase text-gray-400 dark:text-slate-400">Preferencias</p>
+          <p className="text-base font-semibold text-gray-700 dark:text-slate-100">
+            Tema {isDarkMode ? "oscuro" : "claro"}
+          </p>
+          <p className="mt-2 text-xs text-gray-500 dark:text-slate-300">Cambialo en Apariencia del sistema.</p>
+        </div>
+      </div>
+
+      <SectionCard
+        title="Apariencia del sistema"
+        description="Elige el tema de color que prefieras para la plataforma."
+        hint="La preferencia se guarda incluso si cierras sesion o cambias de dispositivo."
+      >
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-md space-y-1">
+            <p className="text-sm text-gray-600 dark:text-slate-300">
+              {isDarkMode
+                ? "El modo oscuro reduce el brillo y ayuda a trabajar en espacios con poca luz."
+                : "El modo claro mantiene un fondo limpio ideal para ambientes bien iluminados."}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-slate-400">Se aplica de inmediato a toda la interfaz.</p>
+          </div>
+          <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm transition-colors dark:border-slate-700 dark:bg-slate-900">
+            <Toggle
+              checked={isDarkMode}
+              onChange={(value) => setTheme(value ? "dark" : "light")}
+              label="Activar modo oscuro"
+            />
+            <div className="text-sm font-semibold text-gray-700 dark:text-slate-100">
+              {isDarkMode ? "Modo oscuro" : "Modo claro"}
+            </div>
+          </div>
+          <div className="flex items-center gap-2" role="group" aria-label="Selector de tema">
+            <button
+              type="button"
+              onClick={() => setTheme("light")}
+              aria-pressed={!isDarkMode}
+              className={`${themeButtonBase} ${isDarkMode ? themeButtonInactive : themeButtonActive}`}
+            >
+              Claro
+            </button>
+            <button
+              type="button"
+              onClick={() => setTheme("dark")}
+              aria-pressed={isDarkMode}
+              className={`${themeButtonBase} ${isDarkMode ? themeButtonActive : themeButtonInactive}`}
+            >
+              Oscuro
+            </button>
+          </div>
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        title="Informacion de la compania"
+        description="Actualiza los datos que se muestran en reportes, facturas y correos."
+      >
+        <form onSubmit={handleCompanySubmit} className="grid gap-4 md:grid-cols-2">
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            Nombre comercial
+            <input
+              type="text"
+              required
+              value={companyDraft.displayName}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, displayName: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            Razon social
+            <input
+              type="text"
+              required
+              value={companyDraft.legalName}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, legalName: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            RUT / Tax ID
+            <input
+              type="text"
+              required
+              value={companyDraft.taxId}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, taxId: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            Correo de contacto
+            <input
+              type="email"
+              required
+              value={companyDraft.email}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, email: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            Telefono
+            <input
+              type="tel"
+              value={companyDraft.phone}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, phone: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 md:col-span-2">
+            Direccion
+            <input
+              type="text"
+              value={companyDraft.address}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, address: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            Ciudad
+            <input
+              type="text"
+              value={companyDraft.city}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, city: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            Pais
+            <input
+              type="text"
+              value={companyDraft.country}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, country: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+            Zona horaria
+            <input
+              type="text"
+              value={companyDraft.timezone}
+              onChange={(event) => setCompanyDraft((prev) => ({ ...prev, timezone: event.target.value }))}
+              className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </label>
+          <div className="md:col-span-2 flex justify-end gap-2 pt-4">
+            <button
+              type="button"
+              onClick={() => setCompanyDraft(initialCompanyDraft(company))}
+              className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+              disabled={isSavingCompany}
+            >
+              Deshacer cambios
+            </button>
+            <button
+              type="submit"
+              disabled={isSavingCompany}
+              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSavingCompany ? "Guardando..." : "Guardar informacion"}
+            </button>
+          </div>
+        </form>
+      </SectionCard>
+
+      <SectionCard
+        title="Notificaciones y alertas"
+        description="Configura los criterios de stock bajo y las notificaciones push."
+        hint={`Verificacion cada ${notifications.preferences.checkEveryMinutes} min. Umbral ${notifications.preferences.lowStockThreshold} unidades.`}
+        action={
+          <div className="flex items-center gap-3">
+            <Toggle
+              checked={notifications.preferences.lowStockEnabled}
+              onChange={(value) => updateNotificationPreferences({ lowStockEnabled: value })}
+              label="Activar monitoreo de stock"
+            />
+            <span className="text-sm text-gray-600 dark:text-slate-300">
+              {notifications.preferences.lowStockEnabled ? "Monitoreo activo" : "Desactivado"}
+            </span>
+          </div>
+        }
+      >
+        <div className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+              Umbral de stock bajo (unidades)
+              <input
+                type="number"
+                min={0}
+                value={notifications.preferences.lowStockThreshold}
+                onChange={(event) => handleThresholdChange(event.target.value)}
+                className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+            </label>
+            <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+              Repetir alerta cada (min)
+              <input
+                type="number"
+                min={5}
+                value={notifications.preferences.repeatMinutes}
+                onChange={(event) => handleNumberPreference("repeatMinutes", event.target.value)}
+                className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+            </label>
+            <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+              Intervalo de verificacion (min)
+              <input
+                type="number"
+                min={5}
+                value={notifications.preferences.checkEveryMinutes}
+                onChange={(event) => handleNumberPreference("checkEveryMinutes", event.target.value)}
+                className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              />
+            </label>
+            <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-slate-300">
+              Canal push
+              <div className="flex items-center gap-3 rounded-lg border border-gray-200 p-3">
+                <Toggle
+                  checked={notifications.preferences.pushEnabled}
+                  onChange={handlePushToggle}
+                  label="Notificaciones push"
+                />
+                <div>
+                  <p className="font-medium text-gray-700">Push del navegador</p>
+                  <p className="text-xs text-gray-500 dark:text-slate-400">
+                    {hasBrowserNotifications ? "Se enviaran alertas incluso si estas fuera de la app." : "No disponible en este navegador."}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 p-3">
+              <Toggle
+                checked={notifications.preferences.emailDigestEnabled}
+                onChange={(value) => updateNotificationPreferences({ emailDigestEnabled: value })}
+                label="Resumen diario"
+              />
+              <div>
+                <p className="text-sm font-medium text-gray-700">Resumen diario por correo</p>
+                <p className="text-xs text-gray-500 dark:text-slate-400">Recibe un informe con movimientos y alertas.</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 rounded-lg border border-gray-100 bg-gray-50 p-3">
+              <Toggle
+                checked={notifications.preferences.soundEnabled}
+                onChange={(value) => updateNotificationPreferences({ soundEnabled: value })}
+                label="Sonido de alerta"
+              />
+              <div>
+                <p className="text-sm font-medium text-gray-700">Sonido de alerta</p>
+                <p className="text-xs text-gray-500 dark:text-slate-400">Reproduce un sonido breve cuando llegue una alerta.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-gray-100 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold text-gray-700">Horario silencioso</p>
+                <p className="text-xs text-gray-500 dark:text-slate-400">
+                  {notifications.preferences.quietHours.enabled
+                    ? `Las notificaciones push se silencian entre ${notifications.preferences.quietHours.start} y ${notifications.preferences.quietHours.end}.`
+                    : "Las alertas push se enviaran a cualquier hora."}
+                </p>
+              </div>
+              <Toggle
+                checked={notifications.preferences.quietHours.enabled}
+                onChange={(value) => handleQuietHoursChange("enabled", value)}
+                label="Horario silencioso"
+              />
+            </div>
+            {notifications.preferences.quietHours.enabled ? (
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+                  Inicio
+                  <input
+                    type="time"
+                    value={notifications.preferences.quietHours.start}
+                    onChange={(event) => handleQuietHoursChange("start", event.target.value)}
+                    className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  />
+                </label>
+                <label className="flex flex-col text-sm text-gray-600 dark:text-slate-300">
+                  Fin
+                  <input
+                    type="time"
+                    value={notifications.preferences.quietHours.end}
+                    onChange={(event) => handleQuietHoursChange("end", event.target.value)}
+                    className="mt-1 rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  />
+                </label>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={markAllNotificationsAsRead}
+              className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+            >
+              Marcar como leidas
+            </button>
+            <button
+              type="button"
+              onClick={clearNotifications}
+              className="rounded-lg border border-red-200 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+            >
+              Limpiar historial
+            </button>
+          </div>
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        title="Historial rapido"
+        description="Ultimas alertas registradas. Revisa el detalle completo desde la campana."
+        action={<span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">{notifications.items.length} alertas totales</span>}
+      >
+        {latestNotifications.length === 0 ? (
+          <p className="text-sm text-gray-500 dark:text-slate-300">Aun no se han registrado notificaciones.</p>
+        ) : (
+          <ul className="space-y-3">{latestNotifications.map(renderNotificationItem)}</ul>
+        )}
+      </SectionCard>
+    </div>
+  );
+};
+
+export default SettingsPage;

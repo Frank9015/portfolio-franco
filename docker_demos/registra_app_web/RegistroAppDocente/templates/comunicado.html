@@ -1,0 +1,38 @@
+{% extends "base3.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/anotaciones.css' %}">
+{% endblock css %}
+{% block contenedor %}
+    <div class="container mt-5">
+        <h1>Envío de Comunicados</h1>
+        <form method="post" id="comunicado-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="tipoComunicado">Tipo de Comunicado</label>
+                <select class="form-control" id="tipoComunicado" name="es_urgente">
+                    <option value="general">General 📢</option>
+                    <option value="urgente">Urgente 🚨</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tituloComunicado">Título</label>
+                <input type="text" class="form-control" id="tituloComunicado" name="titulo">
+            </div>
+            <div class="form-group">
+                <label for="mensaje">Mensaje</label>
+                <textarea class="form-control" id="mensaje" name="contenido" rows="5"></textarea>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-secondary" type="reset">Limpiar</button>
+                <button type="button" data-comunicados-url="{% url 'comunicado' %}" data-dashboard-url="{% url 'IND' %}" onclick="enviarComunicado(this)">Enviar Comunicado</button>
+            </div>
+        </form>
+        <div id="respuesta-comunicado"></div>
+    </div>
+    {% block js %}
+    <script src="{% static 'js/scriptsgenerales.js' %}"></script>
+    {% endblock %}
+</body>
+{% endblock contenedor %}
+</html>

@@ -1,0 +1,127 @@
+{% extends 'base5.html' %}
+{% block css %}
+
+
+{% endblock css %}
+{% block contenedor %}
+<!-- registro -->
+<section class="vh-100" style="background-color: #ffffff">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                <h1 class="text-center fw-bold mb-5 mt-4">
+                  Agregar/Crear Noticias
+                </h1>
+                <form
+                  action="{%url 'AGRNON' %}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  id="formulario"
+                >
+                  {% csrf_token %}
+
+                  <div class="mb-3">
+                    <label for="txtid" class="form-label">ID NOTICIA</label>
+                    <input required type="number" id="txtid" name="txtid" class="form-control"/>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="txtnombre" class="form-label">Titulo de la noticia</label>
+                    <input required type="text" id="txtnombre" name="txtnombre" class="form-control"/>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="cbocategoria" class="form-label">Categoria</label>
+                    <select class="form-control" id="cbocategoria" name="cbocategoria">
+                      {% for item in categorias %}
+                      <option>{{item.nombre}}</option>
+                      {% endfor %}  
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="txtdesc" class="form-label">Descripcion de la noticia</label>
+                    <textarea class="form-control" name="txtdesc" id="txtdesc" rows="6"></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="txtubicacion" class="form-label">Ubicacion (Ejemplo: Santiago, Chile)</label>
+                    <input required type="text" id="txtubicacion" name="txtubicacion" class="form-control"/>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Elije qué subir (Foto o Video)</label>
+                    <input type="file" class="form-control" id="txtfotos" name="txtfotos" accept="image/*" multiple>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Videos (Se recomienda MP4)</label>
+                    <input type="file" class="form-control" id="txtvideos" name="txtvideos" accept="video/*">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Miniatura de la Noticia (Solo Imágenes)</label>
+                    <input required class="form-control" name="txtminiatura" id="txtminiatura" type="file" accept="image/*">
+                  </div>
+
+                  <div>
+                    <button type="button" id="btnEnviar" class="btn btn-primary btn-block mb-4">Enviar solicitud de noticia</button>
+                    <button type="reset" class="btn btn-danger btn-block mb-4">Limpiar todo</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock contenedor %}
+
+    {% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      // Función para mostrar la alerta de confirmación al enviar la solicitud de noticia
+      function confirmacionPublicacion() {
+        return new Promise((resolve) => {
+          Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Una vez enviada, el supervisor revisará y puede rechazar la noticia si detecta algo incorrecto.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, enviar solicitud',
+            cancelButtonText: 'Cancelar',
+            allowOutsideClick: false,
+          }).then((result) => {
+            resolve(result.isConfirmed);
+          });
+        });
+      }
+    
+      // Obtén el formulario y asigna el evento onsubmit
+      const formulario = document.getElementById('formulario');
+      const btnEnviar = document.getElementById('btnEnviar');
+      btnEnviar.onclick = async function () {
+        const confirmado = await confirmacionPublicacion();
+        if (confirmado) {
+          // Si el usuario confirma, envía el formulario
+          formulario.submit();
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+    <script src="js/script-archivos.js"></script>
+    <script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script> 
+    <script>tinymce.init({selector:'textarea'});</script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% endblock js %}
+
+    
+

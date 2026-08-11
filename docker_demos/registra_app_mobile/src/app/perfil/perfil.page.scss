@@ -1,0 +1,51 @@
+ion-footer {
+    ion-toolbar {
+      ion-segment {
+        margin: 0 auto;
+        max-width: 300px;
+      }
+    }
+}
+
+ion-content {
+    --ion-background-color: #000000;
+    overflow: hidden;
+    height: 100%;
+  }
+  
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 20px; /* Añade espacio entre elementos */
+    text-align: center;
+  }
+  
+  ion-avatar {
+    font-size: 3rem;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 100%;
+  }
+  
+  .username {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .email {
+    font-size: 1rem;
+    color: #888;
+  }
+  
+  .user-message {
+    font-weight: bold;
+    text-align: center;
+    font-size: 24px;
+    margin-top: 20px;
+    color: white;
+    animation: hover-animation 3s infinite ease-in-out; /* Ajusta la duración de la animación */
+    transform-style: preserve-3d;
+  }

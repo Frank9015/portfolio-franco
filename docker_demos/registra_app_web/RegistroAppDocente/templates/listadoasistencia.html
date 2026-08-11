@@ -1,0 +1,42 @@
+{% extends "base2.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/listadodecursos.css' %}">
+{% endblock css %}
+{% block contenedor %}
+    <div class="container mt-5">
+        <h1>Listado de Asistencia</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Curso</th>
+                    <th scope="col">Alumnos</th>
+                    <th scope="col">% de Asistencia</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for curso in cursos %}
+                <tr>
+                    <td>{{ curso.nombrecurso }}</td>
+                    <td>{{ curso.cantidad_alumnos }}</td>
+                    <td>{{ curso.porcentaje_asistencia|floatformat:"0" }}%</td>
+                    <td>
+                        <form id="crearClaseForm" data-curso-id="{{ curso.id }}">
+                            {% csrf_token %}
+                            <a class="btn btn-primary" data-curso-id="{{ curso.id }}" data-crearclase-url="{% url 'crear_clase' %}" onclick="iniciarClase(this)">Empezar clase</a>
+                        </form>
+                    </td>                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+{% endblock contenedor%}
+{% block js %}
+<script>
+
+</script>
+{% endblock js %}

@@ -1,0 +1,77 @@
+ion-content {
+    --ion-background-color: #000000;
+    overflow: hidden;
+    height: 100%;
+  }
+  
+  .ion-page {
+    height: 100%;
+  }
+  
+  .start-page {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  
+    .logo-container {
+    
+      margin-bottom: 20px;
+      img {
+        max-width: 500px;
+        max-height: 500px;
+      }
+    }
+  
+    .message-container {
+      background-color: rgb(255, 255, 255);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+  
+      h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #000000;
+        font-weight: bold;
+      }
+  
+      p {
+        font-size: 18px;
+        text-align: center;
+        color: #000000;
+        font-weight: bold;
+      }
+    }
+  
+  
+    .entrar-button {
+      --background: #ffffff;
+      --color: #000000;
+      font-size: 16px;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50%; /* Hace el botón redondo */
+      cursor: pointer;
+      animation: shake-animation 2s infinite; /* Animación de temblor */
+      font-weight: bold;
+    }
+  
+    @keyframes shake-animation {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-10px);
+      }
+      50% {
+        transform: translateX(10px);
+      }
+      75% {
+        transform: translateX(-10px);
+      }
+    }
+  }
+  

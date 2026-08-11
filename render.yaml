@@ -39,8 +39,8 @@ services:
   - type: web
     name: inventpro-web-demo
     env: docker
-    dockerfilePath: ./docker_demos/inventpro_web/Dockerfile
-    dockerContext: ./docker_demos/inventpro_web
+    dockerfilePath: ./docker_demos/inventpro_frontend_web/Dockerfile
+    dockerContext: ./docker_demos/inventpro_frontend_web
     plan: free
     region: oregon
 
@@ -48,7 +48,7 @@ services:
   - type: web
     name: inventpro-bodeguero-demo
     env: docker
-    dockerfilePath: ./docker_demos/inventpro_bodeguero/Dockerfile
-    dockerContext: ./docker_demos/inventpro_bodeguero
+    dockerfilePath: ./docker_demos/inventpro_mobile_bodeguero/Dockerfile
+    dockerContext: ./docker_demos/inventpro_mobile_bodeguero
     plan: free
     region: oregon

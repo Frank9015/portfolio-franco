@@ -7,8 +7,11 @@ dist/
 .astro/
 .vercel/
 
-# Docker Local Demos
-docker_demos/
+# Docker demo subfolder dependencies & temporary files
+docker_demos/**/node_modules/
+docker_demos/**/dist/
+docker_demos/**/.env
+docker_demos/**/postgres_data/
 
 # Environment files
 .env

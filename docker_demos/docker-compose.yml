@@ -1,0 +1,120 @@
+services:
+  # ─────────────────────────────────────────────
+  # CaosNews — Django Portal de Noticias (puerto 8001)
+  # ─────────────────────────────────────────────
+  caosnews:
+    build:
+      context: ./caosnews
+      dockerfile: Dockerfile
+    container_name: caosnews_demo
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────
+  # Registra-App Web — Django Sistema Docente (puerto 8002)
+  # ─────────────────────────────────────────────
+  registra-web:
+    build:
+      context: ./registra_app_web
+      dockerfile: Dockerfile
+    container_name: registra_web_demo
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────
+  # Registra-App Mobile — Ionic/Capacitor Alumno (puerto 8100)
+  # ─────────────────────────────────────────────
+  registra-mobile:
+    build:
+      context: ./registra_app_mobile
+      dockerfile: Dockerfile
+    container_name: registra_mobile_demo
+    ports:
+      - "8100:8100"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────
+  # InventPro PostgreSQL — Base de datos relacional (puerto 5433)
+  # ─────────────────────────────────────────────
+  inventpro-postgres:
+    image: postgres:16-alpine
+    container_name: inventpro_postgres
+    environment:
+      POSTGRES_DB: inventpro
+      POSTGRES_USER: inventpro_user
+      POSTGRES_PASSWORD: inventpro_pass
+    volumes:
+      - inventpro_pgdata:/var/lib/postgresql/data
+      - ./inventpro_backend/docker-init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventpro_user -d inventpro"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────
+  # InventPro Backend — Node.js/Express REST API (puerto 3001)
+  # ─────────────────────────────────────────────
+  inventpro-backend:
+    build:
+      context: ./inventpro_backend
+      dockerfile: Dockerfile
+    container_name: inventpro_backend_demo
+    environment:
+      DB_NAME: inventpro
+      DB_USER: inventpro_user
+      DB_PASSWORD: inventpro_pass
+      DB_HOST: inventpro-postgres
+      DB_PORT: 5432
+      DB_SCHEMA: inventpro_user
+      JWT_SECRET: demo_jwt_secret_portfolio_franco_2024
+      ADMIN_EMAIL: admin@inventpro.cl
+      ADMIN_USERNAME: admin
+      ADMIN_NAME: Administrador
+      ADMIN_PASSWORD: Admin123$
+      DB_SYNC: safe
+      NODE_ENV: development
+      PORT: 3001
+      HOST: 0.0.0.0
+    ports:
+      - "3001:3001"
+    depends_on:
+      inventpro-postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────
+  # InventPro Web Frontend — React/Vite Admin (puerto 8003)
+  # ─────────────────────────────────────────────
+  inventpro-web:
+    build:
+      context: ./inventpro_frontend_web
+      dockerfile: Dockerfile
+    container_name: inventpro_web_demo
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────────
+  # InventPro Mobile Bodeguero — Expo React Native Web (puerto 8005)
+  # ─────────────────────────────────────────────
+  inventpro-bodeguero:
+    build:
+      context: ./inventpro_mobile_bodeguero
+      dockerfile: Dockerfile
+    container_name: inventpro_bodeguero_demo
+    environment:
+      EXPO_PUBLIC_API_URL: http://localhost:3001/api
+    ports:
+      - "8005:8005"
+    restart: unless-stopped
+
+volumes:
+  inventpro_pgdata:
