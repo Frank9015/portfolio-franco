@@ -72,7 +72,7 @@ export const RegistraAppDemo: React.FC = () => {
           </span>
 
           <a
-            href={activeTab === 'web' ? 'http://localhost:8002/' : 'http://localhost:8100/'}
+            href={activeTab === 'web' ? 'https://registra-web-demo.onrender.com/' : 'https://registra-mobile-demo.onrender.com/'}
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -83,7 +83,7 @@ export const RegistraAppDemo: React.FC = () => {
               fontWeight: 600
             }}
           >
-            Abrir {activeTab === 'web' ? ':8002' : ':8100'} ↗
+            Abrir en ventana completa ↗
           </a>
         </div>
       </div>
@@ -100,7 +100,7 @@ export const RegistraAppDemo: React.FC = () => {
           background: '#ffffff'
         }}>
           <iframe
-            src="http://localhost:8002/"
+            src="https://registra-web-demo.onrender.com/"
             title="Registra APP Django Original 1:1"
             style={{ width: '100%', height: '100%', border: 'none' }}
             onError={() => setWebStatus('offline')}
@@ -134,7 +134,7 @@ export const RegistraAppDemo: React.FC = () => {
             }}></div>
 
             <iframe
-              src="http://localhost:8100/"
+              src="https://registra-mobile-demo.onrender.com/"
               title="Registra APP Ionic Mobile 1:1"
               style={{
                 width: '100%',

@@ -57,7 +57,7 @@ export const CaosNewsDemo: React.FC = () => {
           </span>
 
           <a
-            href="http://localhost:8001/"
+            href="https://caosnews-demo.onrender.com/"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -84,7 +84,7 @@ export const CaosNewsDemo: React.FC = () => {
         background: '#ffffff'
       }}>
         <iframe
-          src="http://localhost:8001/"
+          src="https://caosnews-demo.onrender.com/"
           title="CaosNews Django Original 1:1"
           style={{ width: '100%', height: '100%', border: 'none' }}
           onError={() => setServerStatus('offline')}
