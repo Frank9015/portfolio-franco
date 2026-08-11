@@ -40,10 +40,22 @@ export const CaosNewsDemo: React.FC = () => {
           </span>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.78rem', color: '#a7f3d0', fontFamily: "'Fira Code', monospace" }}>
             🔑 Credenciales Admin: admin / admin123
           </span>
+
+          <span style={{
+            fontSize: '0.75rem',
+            color: '#cbd5e1',
+            background: 'rgba(255, 255, 255, 0.06)',
+            padding: '0.2rem 0.5rem',
+            borderRadius: '4px',
+            fontFamily: "'Fira Code', monospace"
+          }}>
+            🛡️ Sandbox Efímero (Restaurable)
+          </span>
+
           <a
             href="http://localhost:8001/"
             target="_blank"
