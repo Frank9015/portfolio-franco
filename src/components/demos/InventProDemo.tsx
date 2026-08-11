@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 
 export const InventProDemo: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'web' | 'bodeguero' | 'prototype' | 'api'>('web');
+  const [activeTab, setActiveTab] = useState<'web' | 'bodeguero' | 'api'>('web');
   const [serverStatus, setServerStatus] = useState<'online' | 'offline'>('online');
 
   const tabs = [
     { id: 'web' as const, label: 'Web Gerencia (React)', port: 8003, url: 'http://localhost:8003/', desc: 'Panel Admin & Stock' },
     { id: 'bodeguero' as const, label: 'App Bodeguero (Expo)', port: 8005, url: 'http://localhost:8005/', desc: 'Control Móvil Bodega' },
-    { id: 'prototype' as const, label: 'Prototipo HTML', port: 8004, url: 'http://localhost:8004/login.html', desc: 'Vista HTML/CSS/JS' },
     { id: 'api' as const, label: 'Backend REST API', port: 3001, url: 'http://localhost:3001/api-docs', desc: 'Node.js Express + Swagger' },
   ];
 
@@ -42,7 +41,7 @@ export const InventProDemo: React.FC = () => {
               fontWeight: activeTab === tab.id ? 700 : 400,
               fontSize: '0.85rem',
               transition: 'all 0.2s ease',
-              minWidth: '140px',
+              minWidth: '150px',
             }}
           >
             {tab.label}
@@ -92,22 +91,29 @@ export const InventProDemo: React.FC = () => {
           </span>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           {activeTab === 'web' && (
             <span style={{ fontSize: '0.75rem', color: '#a7f3d0', fontFamily: "'Fira Code', monospace" }}>
-              Credenciales Admin: admin@inventpro.cl / Admin123$
+              🔑 Credenciales Admin: admin@inventpro.cl / Admin123$
             </span>
           )}
           {activeTab === 'bodeguero' && (
             <span style={{ fontSize: '0.75rem', color: '#fed7aa', fontFamily: "'Fira Code', monospace" }}>
-              Credenciales Bodeguero: bodeguero@inventpro.cl / Admin123$
+              🔑 Credenciales Bodeguero: bodeguero@inventpro.cl / Admin123$
             </span>
           )}
-          {activeTab === 'prototype' && (
-            <span style={{ fontSize: '0.75rem', color: '#bfdbfe', fontFamily: "'Fira Code', monospace" }}>
-              Login Prototipo: admin@inventpro.cl / Admin123$
-            </span>
-          )}
+
+          <span style={{
+            fontSize: '0.75rem',
+            color: '#cbd5e1',
+            background: 'rgba(255, 255, 255, 0.06)',
+            padding: '0.2rem 0.5rem',
+            borderRadius: '4px',
+            fontFamily: "'Fira Code', monospace"
+          }}>
+            🛡️ Sandbox Efímero (Restaurable)
+          </span>
+
           <a
             href={currentTab.url}
             target="_blank"
