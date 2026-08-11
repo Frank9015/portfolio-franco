@@ -32,7 +32,7 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
   apiEndpoints,
   retrospective
 }) => {
-  const [activeTab, setActiveTab] = useState<'architecture' | 'erd' | 'api' | 'retro'>('architecture');
+  const [activeTab, setActiveTab] = useState<'architecture' | 'erd' | 'api' | 'retro' | 'setup'>('architecture');
 
   return (
     <div style={{
@@ -135,6 +135,22 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
             }}
           >
             🧠 Retrospectiva & Growth
+          </button>
+
+          <button
+            onClick={() => setActiveTab('setup')}
+            style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '8px',
+              border: activeTab === 'setup' ? '1px solid #f59e0b' : '1px solid rgba(255,255,255,0.08)',
+              background: activeTab === 'setup' ? 'rgba(245, 158, 11, 0.2)' : 'rgba(255,255,255,0.03)',
+              color: activeTab === 'setup' ? '#fbbf24' : '#94a3b8',
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: '0.88rem'
+            }}
+          >
+            🛠️ Guía de Ejecución Local
           </button>
         </div>
       </div>
@@ -310,6 +326,55 @@ export const ProjectTechnicalDocs: React.FC<Props> = ({
             }}>
               <h5 style={{ color: '#34d399', fontSize: '1rem', marginBottom: '0.4rem' }}>🚀 ¿Cómo lo refactorizaría hoy con mi conocimiento actual?</h5>
               <p style={{ color: '#cbd5e1', fontSize: '0.92rem', lineHeight: 1.6 }}>{retrospective.modernRefactor}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 5: Local Execution Guide */}
+      {activeTab === 'setup' && (
+        <div>
+          <h4 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: '#fbbf24' }}>🛠️ Guía Paso a Paso de Ejecución Local</h4>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{
+              background: '#060913',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '10px',
+              padding: '1.25rem'
+            }}>
+              <h5 style={{ color: '#fbbf24', fontSize: '1rem', marginBottom: '0.5rem' }}>1. Levantamiento con Docker Compose (Recomendado 1-Click):</h5>
+              <pre style={{
+                background: '#0a0f1d',
+                padding: '0.85rem 1rem',
+                borderRadius: '8px',
+                color: '#a7f3d0',
+                fontFamily: "'Fira Code', monospace",
+                fontSize: '0.85rem',
+                overflowX: 'auto'
+              }}>
+{`git clone https://github.com/Frank9015/portfolio-franco.git
+cd portfolio-franco/docker_demos
+docker compose up -d --build`}
+              </pre>
+            </div>
+
+            <div style={{
+              background: '#060913',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '10px',
+              padding: '1.25rem'
+            }}>
+              <h5 style={{ color: '#818cf8', fontSize: '1rem', marginBottom: '0.5rem' }}>2. Documentación Markdown Completa del Repositorio:</h5>
+              <p style={{ color: '#cbd5e1', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                Puedes consultar los archivos de arquitectura, diagramas relacionales completos y guías de variables de entorno <code>.env</code> directamente en la carpeta <code>docs/</code> del proyecto:
+              </p>
+              <ul style={{ color: '#38bdf8', fontFamily: "'Fira Code', monospace", fontSize: '0.85rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                <li>📄 docs/asesorias-borotto.md</li>
+                <li>📄 docs/inventpro.md</li>
+                <li>📄 docs/registra-app.md</li>
+                <li>📄 docs/caosnews.md</li>
+              </ul>
             </div>
           </div>
         </div>
