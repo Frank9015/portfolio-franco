@@ -7,7 +7,7 @@ export const InventProDemo: React.FC = () => {
   const tabs = [
     { id: 'web' as const, label: 'Web Gerencia (React)', port: 8003, url: 'http://localhost:8003/', desc: 'Panel Admin & Stock' },
     { id: 'bodeguero' as const, label: 'App Bodeguero (Expo)', port: 8005, url: 'http://localhost:8005/', desc: 'Control Móvil Bodega' },
-    { id: 'api' as const, label: 'Backend REST API', port: 3001, url: 'http://localhost:3001/api-docs', desc: 'Node.js Express + Swagger' },
+    { id: 'api' as const, label: 'Backend REST API', port: 3001, url: 'http://localhost:3001/api-docs/', desc: 'Node.js Express + Swagger' },
   ];
 
   const currentTab = tabs.find(t => t.id === activeTab)!;
