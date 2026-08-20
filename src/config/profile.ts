@@ -139,7 +139,7 @@ export const PROFILE_CONFIG = {
         { name: "Nodemailer", category: "backend" },
         { name: "Vercel", category: "cloud" }
       ],
-      liveUrl: "https://asesorias-borotto.vercel.app/",
+      liveUrl: "https://asesoriasborotto.cl/",
       githubUrl: "https://github.com/Frank9015/AsesoriasBorotto",
       role: "Desarrollador Full-Stack Lead"
     },

@@ -95,7 +95,7 @@ export const AsesoriasBorottoDemo: React.FC = () => {
         </div>
 
         <a
-          href="https://asesorias-borotto.vercel.app/"
+          href="https://asesoriasborotto.cl/"
           target="_blank"
           rel="noopener noreferrer"
           style={{
@@ -121,7 +121,7 @@ export const AsesoriasBorottoDemo: React.FC = () => {
           background: '#060913'
         }}>
           <iframe
-            src="https://asesorias-borotto.vercel.app/"
+            src="https://asesoriasborotto.cl/"
             title="Asesorías Borotto Live Demo"
             style={{ width: '100%', height: '100%', border: 'none' }}
           />
